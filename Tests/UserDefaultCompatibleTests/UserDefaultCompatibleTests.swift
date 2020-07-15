@@ -34,8 +34,7 @@ final class UserDefaultCompatibleTests: XCTestCase {
 
     override func setUpWithError() throws {
         ud = UserDefaults.standard
-        let keys = ud.dictionaryRepresentation().keys
-        keys.forEach(ud.removeObject(forKey:))
+        ud.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
     }
 
     func testCodableValue() throws {
