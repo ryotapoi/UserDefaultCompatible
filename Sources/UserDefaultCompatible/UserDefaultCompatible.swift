@@ -2,17 +2,17 @@ import Foundation
 
 // MARK: - UserDefaults
 
-public protocol UserDefaultsProtocol : NSObject {
-    func value<Value : UserDefaultCompatible>(type: Value.Type, forKey key: String, default defaultValue: Value) -> Value
-    func setValue<Value : UserDefaultCompatible>(_ value: Value, forKey key: String)
+public protocol UserDefaultsProtocol: NSObject {
+    func value<Value: UserDefaultCompatible>(type: Value.Type, forKey key: String, default defaultValue: Value) -> Value
+    func setValue<Value: UserDefaultCompatible>(_ value: Value, forKey key: String)
 }
 
-extension UserDefaults : UserDefaultsProtocol {
-    public func value<Value : UserDefaultCompatible>(type: Value.Type = Value.self, forKey key: String, default defaultValue: Value) -> Value {
+extension UserDefaults: UserDefaultsProtocol {
+    public func value<Value: UserDefaultCompatible>(type: Value.Type = Value.self, forKey key: String, default defaultValue: Value) -> Value {
         guard let object = object(forKey: key) else { return defaultValue }
         return Value(userDefaultObject: object) ?? defaultValue
     }
-    public func setValue<Value : UserDefaultCompatible>(_ value: Value, forKey key: String) {
+    public func setValue<Value: UserDefaultCompatible>(_ value: Value, forKey key: String) {
         set(value.toUserDefaultObject(), forKey: key)
     }
 }
@@ -24,7 +24,7 @@ public protocol UserDefaultCompatible {
     func toUserDefaultObject() -> Any?
 }
 
-extension UserDefaultCompatible where Self : Codable {
+extension UserDefaultCompatible where Self: Codable {
     public init?(userDefaultObject: Any) {
         guard let data = userDefaultObject as? Data else { return nil }
         do {
@@ -38,7 +38,7 @@ extension UserDefaultCompatible where Self : Codable {
     }
 }
 
-extension UserDefaultCompatible where Self : NSObject, Self : NSCoding {
+extension UserDefaultCompatible where Self: NSObject, Self: NSCoding {
     public init?(userDefaultObject: Any) {
         guard let data = userDefaultObject as? Data else { return nil }
         if let value = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Self {
@@ -56,8 +56,8 @@ extension UserDefaultCompatible where Self : NSObject, Self : NSCoding {
     }
 }
 
-extension Array : UserDefaultCompatible where Element : UserDefaultCompatible {
-    private struct UserDefaultCompatibleError : Error {}
+extension Array: UserDefaultCompatible where Element: UserDefaultCompatible {
+    private struct UserDefaultCompatibleError: Error {}
     public init?(userDefaultObject: Any) {
         guard let objects = userDefaultObject as? [Any] else { return nil }
         do {
@@ -78,8 +78,8 @@ extension Array : UserDefaultCompatible where Element : UserDefaultCompatible {
     }
 }
 
-extension Dictionary : UserDefaultCompatible where Key == String, Value : UserDefaultCompatible {
-    private struct UserDefaultCompatibleError : Swift.Error {}
+extension Dictionary: UserDefaultCompatible where Key == String, Value: UserDefaultCompatible {
+    private struct UserDefaultCompatibleError: Swift.Error {}
     public init?(userDefaultObject: Any) {
         guard let objects = userDefaultObject as? [String: Any] else { return nil }
         do {
@@ -101,7 +101,7 @@ extension Dictionary : UserDefaultCompatible where Key == String, Value : UserDe
     }
 }
 
-extension Optional : UserDefaultCompatible where Wrapped : UserDefaultCompatible {
+extension Optional: UserDefaultCompatible where Wrapped: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         self = Wrapped(userDefaultObject: userDefaultObject)
     }
@@ -110,7 +110,7 @@ extension Optional : UserDefaultCompatible where Wrapped : UserDefaultCompatible
     }
 }
 
-extension Int : UserDefaultCompatible {
+extension Int: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
@@ -120,7 +120,7 @@ extension Int : UserDefaultCompatible {
     }
 }
 
-extension Double : UserDefaultCompatible {
+extension Double: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
@@ -130,7 +130,7 @@ extension Double : UserDefaultCompatible {
     }
 }
 
-extension Float : UserDefaultCompatible {
+extension Float: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
@@ -140,7 +140,7 @@ extension Float : UserDefaultCompatible {
     }
 }
 
-extension Bool : UserDefaultCompatible {
+extension Bool: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
@@ -150,7 +150,7 @@ extension Bool : UserDefaultCompatible {
     }
 }
 
-extension String : UserDefaultCompatible {
+extension String: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
@@ -160,7 +160,7 @@ extension String : UserDefaultCompatible {
     }
 }
 
-extension URL : UserDefaultCompatible {
+extension URL: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Data else { return nil }
         guard let url = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(userDefaultObject) as? URL else { return nil }
@@ -171,7 +171,7 @@ extension URL : UserDefaultCompatible {
     }
 }
 
-extension Date : UserDefaultCompatible {
+extension Date: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
@@ -181,7 +181,7 @@ extension Date : UserDefaultCompatible {
     }
 }
 
-extension Data : UserDefaultCompatible {
+extension Data: UserDefaultCompatible {
     public init?(userDefaultObject: Any) {
         guard let userDefaultObject = userDefaultObject as? Self else { return nil }
         self = userDefaultObject
