@@ -2,7 +2,12 @@ import Foundation
 
 // MARK: - UserDefaults
 
-extension UserDefaults {
+public protocol UserDefaultsProtocol : NSObject {
+    func value<Value : UserDefaultCompatible>(type: Value.Type, forKey key: String, default defaultValue: Value) -> Value
+    func setValue<Value : UserDefaultCompatible>(_ value: Value, forKey key: String)
+}
+
+extension UserDefaults : UserDefaultsProtocol {
     public func value<Value : UserDefaultCompatible>(type: Value.Type = Value.self, forKey key: String, default defaultValue: Value) -> Value {
         guard let object = object(forKey: key) else { return defaultValue }
         return Value(userDefaultObject: object) ?? defaultValue
