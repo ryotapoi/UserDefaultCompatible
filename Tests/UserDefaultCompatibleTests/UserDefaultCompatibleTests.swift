@@ -1,12 +1,12 @@
 import XCTest
 @testable import UserDefaultCompatible
 
-struct CodableValue : Codable, UserDefaultCompatible, Equatable {
+struct CodableValue: Codable, UserDefaultCompatible, Equatable {
     var name: String
     var age: Int
 }
 
-class CodingValue : NSObject, NSCoding, UserDefaultCompatible {
+class CodingValue: NSObject, NSCoding, UserDefaultCompatible {
     var name: String
     var age: Int
     init(name: String, age: Int) {
@@ -34,8 +34,7 @@ final class UserDefaultCompatibleTests: XCTestCase {
 
     override func setUpWithError() throws {
         ud = UserDefaults.standard
-        let keys = ud.dictionaryRepresentation().keys
-        keys.forEach(ud.removeObject(forKey:))
+        ud.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
     }
 
     func testCodableValue() throws {
